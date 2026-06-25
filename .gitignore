@@ -1,0 +1,11 @@
+# Visual Studio Code
+.vscode/
+
+# Visual Studio
+.vs/
+*.sln
+
+# PSDK
+.gameopts
+Saves/
+*.dat
