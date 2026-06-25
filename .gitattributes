@@ -1,2 +1,23 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+*.ini text eol=lf
+*.json text eol=lf
+*.rb text eol=lf
+
+# Treat all multimedia and graphics assets as binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.bmp binary
+*.ico binary
+
+*.wav binary
+*.mp3 binary
+*.ogg binary
+*.mid binary
+*.midi binary
+
+# Treat font files as binary
+*.ttf binary
+*.otf binary
