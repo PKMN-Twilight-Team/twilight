@@ -1,0 +1,62 @@
+#================================================================================================
+# Pokémon Twilight - Luma > Action Luma
+#================================================================================================
+
+module Battle
+  module Actions
+    class Luma < Base
+      # Get the user of this action
+      # @return [PFM::PokemonBattler]
+      attr_reader :user
+
+      # Create a new Luma action
+      # @param scene [Battle::Scene]
+      # @param user [PFM::PokemonBattler]
+      def initialize(scene, user)
+        super(scene)
+        @user = user
+      end
+
+      # Compare this action with another
+      # @param other [Base] other action
+      # @return [Integer]
+      def <=>(other)
+        return 1 if other.is_a?(HighPriorityItem)
+        return 1 if other.is_a?(Attack) && Attack.from(other).pursuit_enabled
+        return 1 if other.is_a?(Item)
+        return 1 if other.is_a?(Switch)
+        return Luma.from(other).user.spd <=> @user.spd if other.is_a?(Luma)
+
+        return -1
+      end
+
+      # Execute the action
+      def execute
+        @scene.logic.mark_as_luma_used(@user)
+        visual = @scene.visual
+        sprite = visual.battler_sprite(@user.bank, @user.position)
+        sprite.go_out
+        visual.hide_info_bar(@user)
+        wait_for(sprite, visual)
+        @user.luma
+        sprite.pokemon = @user
+        sprite.visible = false
+        sprite.go_in
+        visual.show_info_bar(@user)
+        wait_for(sprite, visual)
+      end
+
+      private
+
+      # Wait for the sprite animation to be done
+      # @param sprite [#done?]
+      # @param visual [Battle::Visual]
+      def wait_for(sprite, visual)
+        until sprite.done?
+          visual.update
+          Graphics.update
+        end
+      end
+    end
+  end
+end
